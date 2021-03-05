@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 
 from .models import User, Transaction
 
-# Create your views here.
 
 @login_required(login_url='/login')
 def index(request):
