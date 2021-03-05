@@ -1,7 +1,10 @@
 {% extends "tracker/layout.html" %}
 
 {% load mathfilters %}
+{% load widget_tweaks %}
 
+
+{% if user.is_authenticated %}
 {% block body %}
 <div class="container">
     <div class="debit_credit">
@@ -37,7 +40,7 @@
         {% endif %}
         <div>
             <button  data-entry="{{ objects.uuid }}" type="submit" name="delete" class="btn btn-danger">Delete</button>
-            <button data-entry="{{ objects.uuid }}" onclick='overlay_edit()' class="btn btn-primary">Edit</button>
+            <button  type="button" data-entry="{{ forloop.counter }}" onclick='overlay_edit( "{{ forloop.counter }}" )' class="btn btn-primary" value="{{ forloop.counter }}">Edit</button>
         </div>
         
     </div>
@@ -47,8 +50,60 @@
 </div>
 
 
-{% endfor %}
+<div id="overlay_edit_{{ forloop.counter }}" class="overlay_edit">
+    <div id="overlay_container">
+        <div class="insert_form">
+            <form action="/edit/{{ objects.uuid }}" method="post">
+                {% csrf_token %}
+                <div class="entry_element">
+                    <div id="date_tag" class="tags">
+                     Date:
+                     </div>
+                     <div id="date_field" class="fields">
+                    {% now "d M Y" %}
+                    </div>
+                </div>
+                <div class="entry_element">
+                    <div id="descr_tag" class="tags">
+                    Description:
+                     </div>
+                     <div id="descr_field" class="fields">
+                     {% render_field form.descr placeholder=objects.description %}
+                     </div>
+                </div>
+                <div class="entry_element">
+                    <div id="cat_tag" class="tags">
+                    Category:
+                    </div>
+                    <div id="cat_field" class="fields">
+                    {{ form.category }}
+                    </div>
+                </div>
+                <div class="entry_element">
+                    <div id="amount_tag" class="tags">
+                    Amount:
+                    </div>
+                    <div id="amount_field" class="fields">
+                    {% if objects.credit > 0 %}
+                    {% render_field form.value placeholder=objects.credit %}
+                    {% else %}
+                    {% render_field form.value placeholder=objects.debit %}
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="entry_buttons">
+                <button type="submit" method="post" class="btn btn-primary" name="edit">Submit</button>
+                <button type="button" id="cancelButton_edit"  class="btn btn-danger" onclick='overlay_edit_close("{{ forloop.counter }}")'>Cancel</button>
+                </div>
+    
+            </form>
+        </div>
+    </div>
 </div>
+
+
+{% endfor %}
+
 
 <div id="overlay">
     <div id="overlay_container">
@@ -89,13 +144,15 @@
                 </div>
                 <div class="entry_buttons">
                 <button type="submit" method="post" class="btn btn-primary">Submit</button>
-                <button id="cancelButton"  class="btn btn-danger">Cancel</button>
+                <button type="button" id="cancelButton"  class="btn btn-danger" >Cancel</button>
                 </div>
     
             </form>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -115,9 +172,14 @@ function overlay() {
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
 }
 
-function overlay_edit() {
-	el = document.getElementById("overlay_edit");
-	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+function overlay_edit(x) {
+	el1 = document.getElementById("overlay_edit_"+x);
+	el1.style.visibility = (el1.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+function overlay_edit_close(x) {
+	el1 = document.getElementById("overlay_edit_"+x);
+	el1.style.visibility = "hidden";
 }
 
 document.getElementById("cancelButton").addEventListener("click", function() {
@@ -125,10 +187,6 @@ document.getElementById("cancelButton").addEventListener("click", function() {
     el.style.visibility = "hidden";
 });
 
-document.getElementById("cancelButton_edit").addEventListener("click", function() {
-    el = document.getElementById("overlay_edit");
-    el.style.visibility = "hidden";
-});
 
 function filterSelection(string){
     if(string=='all'){
@@ -157,3 +215,4 @@ function filterSelection(string){
 
 </script>
 {% endblock %}
+{% endif %}

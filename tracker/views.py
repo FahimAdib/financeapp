@@ -6,11 +6,13 @@ from django.urls import reverse
 from django import forms
 from django.db.models import Sum
 import datetime
+from django.contrib.auth.decorators import login_required
 
 from .models import User, Transaction
 
 # Create your views here.
 
+@login_required(login_url='/login')
 def index(request):
     if request.method == "POST":
         tran = Transaction()
@@ -29,6 +31,7 @@ def index(request):
     else:
         return render(request, "tracker/index.html", {
             "form": createTransaction(),
+            
             "trans": Transaction.objects.all().filter(user=request.user, created__year=datetime.datetime.now().year, 
                       created__month=datetime.datetime.now().month),
             "credit": Transaction.objects.filter(user=request.user).aggregate(Sum('credit')),
@@ -106,11 +109,23 @@ class createTransaction(forms.Form):
 
 def edit(request, uuid):
     if request.method == "POST":
-        tran = Transaction()
         form = createTransaction(request.POST)
         if "delete" in request.POST:
             Transaction.objects.all().filter(uuid=uuid).first().delete()
-    
+        elif "edit" in request.POST:
+            tran = Transaction.objects.get(uuid=uuid)
+            print(tran)
+            if form.is_valid():
+                tran.category = form.cleaned_data['category']
+                tran.description = form.cleaned_data['descr']
+                tran.credit = 0
+                tran.debit = 0
+                if form.cleaned_data['value'] >= 0:
+                    tran.credit = form.cleaned_data['value']
+                else:
+                    tran.debit = form.cleaned_data['value']
+                tran.save()
+                return HttpResponseRedirect(reverse("index"))
         return HttpResponseRedirect(reverse("index"))
     else:
         return HttpResponseRedirect(reverse("index"))
