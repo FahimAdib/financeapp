@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Enter an Integer:</p>
+<input id="integer" type="number"></input>
+<button onclick='run()'>Run</button>
+<p id="number"></p>
+
+<script>
+
+function run(){
+	var x = document.getElementById("integer").value;
+    recursion(x);
+}
+
+function recursion(x){
+	if(x<1){
+    	return
+    }
+    document.getElementById("number").innerHTML = document.getElementById("number").innerHTML + x +" ";
+    recursion(x-1);
+    document.getElementById("number").innerHTML = document.getElementById("number").innerHTML + x+ " ";
+}
+</script>
+
+</body>
+</html>
