@@ -1,0 +1,106 @@
+#overlay {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index: 1000;
+    background-color: rgba(232, 236, 241, 0.5);
+}
+
+#overlay_edit {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width:100%;
+    height:100%;
+    text-align:center;
+    z-index: 1000;
+    background-color: rgba(232, 236, 241, 0.5)
+}
+
+
+
+#overlay div {
+    width:50vw;
+    height: 40vh;
+    margin: 100px auto;
+    background-color: #fff;
+    border:1px solid #000;
+    padding:15px;
+    text-align:center;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#overlay_edit div {
+    width:300px;
+    margin: 100px auto;
+    background-color: #fff;
+    border:1px solid #000;
+    padding:15px;
+    text-align:center;
+}
+
+body {
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+.transactions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 40vw;
+    border: 1px solid rgb(165, 165, 165);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.transactions_element {
+    
+    border: 1px solid rgb(218, 218, 218);
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.transaction_container {
+   display: block;
+   margin: 5px;
+}
+
+.container {
+    max-width: 40vw;
+    margin: auto;
+    margin-top: 15px;
+}
+
+#myBtnContainer {
+    margin: 5px;
+}
+
+.debit_credit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.nav_bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 38vw;
+    margin: auto;
+}
+
+#add_new {
+    margin: 5px;
+}

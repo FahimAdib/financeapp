@@ -1,4 +1,165 @@
 {% extends "tracker/layout.html" %}
 
+{% load mathfilters %}
+
 {% block body %}
+<div class="container">
+    <div class="debit_credit">
+        
+<div id="debit">Total Debit: {{ debit.debit__sum|abs }}</div>
+<div id="credit">Total Credit: {{ credit.credit__sum|abs }}</div>
+    </div>
+<div id="add_new"><button class="btn btn-primary" href="#" onclick='overlay()'>Add</button></div>
+
+
+<div id="myBtnContainer">
+    <button class="btn btnF btn-outline-secondary active" onclick="filterSelection('all')"> Show all</button>
+    <button class="btn btnF btn-outline-secondary" onclick="filterSelection('Food')"> Food</button>
+    <button class="btn btnF btn-outline-secondary" onclick="filterSelection('Income')"> Income</button>
+    <button class="btn btnF btn-outline-secondary" onclick="filterSelection('Transport')"> Transport</button>
+    <button class="btn btnF btn-outline-secondary" onclick="filterSelection('Bills')"> Bills</button>
+    <button class="btn btnF btn-outline-secondary" onclick="filterSelection('Clothes')"> Clothes</button>
+  </div>
+
+{% for objects in trans %}
+
+<div class="transaction_container {{ objects.category }}">
+        <form action="/edit/{{ objects.uuid }}" method="post">
+            
+    <div class="transactions">
+        {% csrf_token %}
+        <div class="transactions_element">{{ objects.created|date:"d M Y" }}</div>
+        <div class="transactions_element"> {{ objects.category }}</div>
+        {% if objects.credit > 0 %}
+            <div class="transactions_element">$ {{ objects.credit|abs }}</div>
+        {% else %}
+        <div class="transactions_element">$ {{ objects.debit|abs }}</div>
+        {% endif %}
+        <div>
+            <button  data-entry="{{ objects.uuid }}" type="submit" name="delete" class="btn btn-danger">Delete</button>
+            <button data-entry="{{ objects.uuid }}" onclick='overlay_edit()' class="btn btn-primary">Edit</button>
+        </div>
+        
+    </div>
+    
+    </form>
+    
+</div>
+
+
+{% endfor %}
+</div>
+
+<div id="overlay_edit">
+    <div class="update_form">
+        <form action="/edit/{{ objects.uuid }}" method="post">
+            {% csrf_token %}
+            
+            Date:
+            <br>
+            {{ objects.created|date:"d M Y" }}
+            <br>
+            Description:
+            <br>
+            {{ objects.description }}
+            <br>
+            Category:
+            <br>
+            {{ objects.category }}
+            <br>
+            Amount:
+            <br>
+            {{ objects.credit }}
+            <br><br>
+            <button type="submit" method="post" class="buttonAll">Submit</button>
+            <button id="cancelButton_edit">Cancel</button>
+
+        </form>
+    </div>
+</div>
+
+<div id="overlay">
+        <div class="insert_form">
+            <form action="{% url 'insert' %}" method="post">
+                {% csrf_token %}
+                Date:
+                <br>
+                {% now "d M Y" %}
+                <br>
+                Description:
+                <br>
+                {{ form.descr }}
+                <br>
+                Category:
+                <br>
+                {{ form.category }}
+                <br>
+                Amount:
+                <br>
+                {{ form.value }}
+                <br><br>
+                <button type="submit" method="post" class="buttonAll">Submit</button>
+                <button id="cancelButton">Cancel</button>
+    
+            </form>
+        </div>
+</div>
+
+
+
+<script>
+function overlay() {
+	el = document.getElementById("overlay");
+	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+function overlay_edit() {
+	el = document.getElementById("overlay_edit");
+	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+document.getElementById("cancelButton").addEventListener("click", function() {
+    el = document.getElementById("overlay");
+    el.style.visibility = "hidden";
+});
+
+document.getElementById("cancelButton_edit").addEventListener("click", function() {
+    el = document.getElementById("overlay_edit");
+    el.style.visibility = "hidden";
+});
+
+function filterSelection(string){
+    if(string=='all'){
+    
+    select = document.querySelectorAll(".transaction_container");
+    select.forEach((element) => {
+    element.style.display = "none";});
+
+    select = document.querySelectorAll(".transaction_container");
+    select.forEach((element) => {
+    element.style.display = "block";});
+    }
+    else{
+        
+    select = document.querySelectorAll(".transaction_container");
+    select.forEach((element) => {
+    element.style.display = "none";});
+
+    select1 = document.querySelectorAll("."+string);
+    select1.forEach((element) => {
+    element.style.display = "block";});
+    }
+}
+
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btnF");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+
+</script>
 {% endblock %}
