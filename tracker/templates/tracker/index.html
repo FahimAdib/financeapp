@@ -6,10 +6,10 @@
 <div class="container">
     <div class="debit_credit">
         
-<div id="debit">Total Debit: {{ debit.debit__sum|abs }}</div>
-<div id="credit">Total Credit: {{ credit.credit__sum|abs }}</div>
+<div id="debit" class="total">Total Debit: <span class="font-weight-bold"> {{ debit.debit__sum|abs }}</span></div>
+<div id="credit" class="total">Total Credit: <span class="font-weight-bold"> {{ credit.credit__sum|abs }}</span></div>
     </div>
-<div id="add_new"><button class="btn btn-primary" href="#" onclick='overlay()'>Add</button></div>
+<div id="add_new"><button class="btn btn-primary" href="#" onclick='overlay()'>Add Transaction</button></div>
 
 
 <div id="myBtnContainer">
@@ -50,64 +50,66 @@
 {% endfor %}
 </div>
 
-<div id="overlay_edit">
-    <div class="update_form">
-        <form action="/edit/{{ objects.uuid }}" method="post">
-            {% csrf_token %}
-            
-            Date:
-            <br>
-            {{ objects.created|date:"d M Y" }}
-            <br>
-            Description:
-            <br>
-            {{ objects.description }}
-            <br>
-            Category:
-            <br>
-            {{ objects.category }}
-            <br>
-            Amount:
-            <br>
-            {{ objects.credit }}
-            <br><br>
-            <button type="submit" method="post" class="buttonAll">Submit</button>
-            <button id="cancelButton_edit">Cancel</button>
-
-        </form>
-    </div>
-</div>
-
 <div id="overlay">
+    <div id="overlay_container">
         <div class="insert_form">
             <form action="{% url 'insert' %}" method="post">
                 {% csrf_token %}
-                Date:
-                <br>
-                {% now "d M Y" %}
-                <br>
-                Description:
-                <br>
-                {{ form.descr }}
-                <br>
-                Category:
-                <br>
-                {{ form.category }}
-                <br>
-                Amount:
-                <br>
-                {{ form.value }}
-                <br><br>
-                <button type="submit" method="post" class="buttonAll">Submit</button>
-                <button id="cancelButton">Cancel</button>
+                <div class="entry_element">
+                    <div id="date_tag" class="tags">
+                     Date:
+                     </div>
+                     <div id="date_field" class="fields">
+                    {% now "d M Y" %}
+                    </div>
+                </div>
+                <div class="entry_element">
+                    <div id="descr_tag" class="tags">
+                    Description:
+                     </div>
+                     <div id="descr_field" class="fields">
+                     {{ form.descr }}
+                     </div>
+                </div>
+                <div class="entry_element">
+                    <div id="cat_tag" class="tags">
+                    Category:
+                    </div>
+                    <div id="cat_field" class="fields">
+                    {{ form.category }}
+                    </div>
+                </div>
+                <div class="entry_element">
+                    <div id="amount_tag" class="tags">
+                    Amount:
+                    </div>
+                    <div id="amount_field" class="fields">
+                     {{ form.value }}
+                    </div>
+                </div>
+                <div class="entry_buttons">
+                <button type="submit" method="post" class="btn btn-primary">Submit</button>
+                <button id="cancelButton"  class="btn btn-danger">Cancel</button>
+                </div>
     
             </form>
         </div>
+    </div>
 </div>
 
 
 
 <script>
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btnF");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+
 function overlay() {
 	el = document.getElementById("overlay");
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
@@ -151,15 +153,7 @@ function filterSelection(string){
     }
 }
 
-var btnContainer = document.getElementById("myBtnContainer");
-var btns = btnContainer.getElementsByClassName("btnF");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function() {
-    var current = document.getElementsByClassName("active");
-    current[0].className = current[0].className.replace(" active", "");
-    this.className += " active";
-  });
-}
+
 
 </script>
 {% endblock %}
