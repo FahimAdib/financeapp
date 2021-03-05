@@ -2,13 +2,13 @@
 
 Required installations:
 
-pip install django
-pip install django-mathfilters
+pip install django <br>
+pip install django-mathfilters <br>
 pip install django-widget-tweaks
 
 Run:
 
-python manage.py migrate
+python manage.py migrate <br>
 python manage.py runserver
 
 
