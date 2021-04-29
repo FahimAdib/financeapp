@@ -11,4 +11,7 @@ Run:
 python manage.py migrate <br>
 python manage.py runserver
 
+Live:
+
+http://fahimadib.pythonanywhere.com/
 
